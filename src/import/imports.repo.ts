@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PaginationQueryType } from 'src/shared/models/pagination.model';
+import { PaginationQueryType } from '../shared/models/pagination.model';
 import {
   CreateImportInputType,
   ImportResponseType,
