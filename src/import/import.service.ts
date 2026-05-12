@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ImportsRepository } from './imports.repo';
+import { ImportsRepository } from './import.repo';
 import { PaginationQueryType } from '../shared/models/pagination.model';
-import { CreateImportInputType, UpdateImportInputType } from './imports.model';
+import { CreateImportInputType, UpdateImportInputType } from './import.model';
 
 @Injectable()
 export class ImportsService {

@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { ImportsService } from './import.service';
-import { CreateImportDTO, ListImportQueryDTO, ListImportResDTO, UpdateImportDTO } from './dto/imports.dto';
-import { MessageResDTO } from 'src/shared/dto/response.dto';
+import { CreateImportDTO, ListImportQueryDTO, ListImportResDTO, UpdateImportDTO } from './dto/import.dto';
+import { MessageResDTO } from '../shared/dto/response.dto';
 
 @ApiTags('Imports')
 @Controller('imports')

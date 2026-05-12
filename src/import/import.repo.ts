@@ -6,7 +6,7 @@ import {
   ImportResponseType,
   ListImportResType,
   UpdateImportInputType,
-} from './imports.model';
+} from './import.model';
 
 @Injectable()
 export class ImportsRepository {

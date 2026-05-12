@@ -1,4 +1,4 @@
-// src/modules/imports/dto/imports.dto.ts
+
 import { createZodDto } from 'nestjs-zod';
 import {
   CreateImportInputSchema,
@@ -6,7 +6,7 @@ import {
   ListImportQuerySchema,
   ListImportResSchema,
   ImportResponseSchema,
-} from '../imports.model';
+} from '../import.model';
 
 /**
  * DTO dùng cho việc tạo mới một kiện hàng.
