@@ -3,34 +3,32 @@ import { AppModule } from './app.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { envConfig } from './shared/config';
 
-// 1. Tạo biến để lưu instance của ứng dụng
 let app;
 
 async function bootstrap() {
-  if (!app) {
-    app = await NestFactory.create(AppModule);
-    app.useGlobalPipes(new ZodValidationPipe());
-    app.setGlobalPrefix('api');
-    app.enableCors();
+  try {
+    if (!app) {
+      console.log('🚀 [Bootstrap] Đang khởi tạo NestFactory...');
+      app = await NestFactory.create(AppModule);
 
-    const port = envConfig.port || 8080;
+      app.useGlobalPipes(new ZodValidationPipe());
+      app.setGlobalPrefix('api');
+      app.enableCors();
 
-    // Chỉ listen nếu chạy ở máy local (Development)
-    if (process.env.NODE_ENV !== 'production') {
-      await app.listen(port);
-      console.log(`🚀 Local server: http://localhost:${port}/api`);
-    } else {
-      // Bắt buộc phải gọi init() trên môi trường Serverless (Vercel)
+      console.log('⏳ [Bootstrap] Đang gọi app.init()...');
       await app.init();
+      console.log('✅ [Bootstrap] Khởi tạo thành công!');
     }
+    return app.getHttpAdapter().getInstance();
+  } catch (error) {
+    console.error('❌ [Bootstrap] LỖI KHỞI CHẠY:', error.message);
+    console.error('❌ [Bootstrap] Chi tiết:', error.stack);
+    throw error;
   }
-  return app.getHttpAdapter().getInstance();
 }
 
-// 2. Tự chạy bootstrap khi ở local
 if (process.env.NODE_ENV !== 'production') {
   bootstrap();
 }
 
-// 3. QUAN TRỌNG NHẤT: Export default hàm bootstrap để Vercel nhận diện
 export default bootstrap;
