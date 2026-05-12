@@ -1,20 +1,16 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleInit } from '@nestjs/common'
+import { PrismaClient } from '@prisma/client'
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  async onModuleInit() {
-    try {
-      // Không dùng await trực tiếp ở đây để tránh làm treo quá trình khởi tạo app
-      this.$connect()
-        .then(() => console.log('✅ MongoDB Connected Successfully'))
-        .catch((err) => console.error('❌ MongoDB Connection Error:', err));
-    } catch (error) {
-      console.error('❌ Prisma Init Error:', error);
-    }
+export class PrismaService extends PrismaClient implements OnModuleInit {
+  constructor() {
+    super({
+      log: ['info'], // Ghi log các truy vấn, thông tin, cảnh báo và lỗi
+    })
   }
 
-  async onModuleDestroy() {
-    await this.$disconnect();
+  // Khi module này bắt đầu chạy, nó sẽ kết nối đến cơ sở dữ liệu
+  async onModuleInit() {
+    await this.$connect()
   }
 }
