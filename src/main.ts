@@ -3,20 +3,26 @@ import { AppModule } from './app.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { envConfig } from './shared/config';
 
-async function bootstrap() {
+// 1. Export hàm bootstrap
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalPipes(new ZodValidationPipe());
-
   app.setGlobalPrefix('api');
+  app.enableCors(); // Thêm cái này cho chắc
 
   const port = envConfig.port || 8080;
 
-  await app.listen(port);
+  // 2. CHỈ listen nếu chạy ở máy local
+  if (process.env.NODE_ENV !== 'production') {
+    await app.listen(port);
+    console.log(`🚀 Local server: http://localhost:${port}/api`);
+  }
 
-  console.log(
-    `🚀 Server lilmi.2HAND đang chạy tại: http://localhost:${port}/api`,
-  );
+  await app.init();
+  return app.getHttpAdapter().getInstance(); // Export instance cho Vercel
 }
 
-bootstrap();
+// 3. Tự chạy khi ở local
+if (process.env.NODE_ENV !== 'production') {
+  bootstrap();
+}
