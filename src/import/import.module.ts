@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ImportsService } from './import.service';
 import { ImportsController } from './import.controller';
 import { ImportsRepository } from './import.repo';
-// SỬA DÒNG NÀY: Dùng đường dẫn tương đối (.. là lùi ra src, rồi vào prisma)
 import { PrismaModule } from '../prisma/prisma.module'; 
 
 @Module({
