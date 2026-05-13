@@ -44,17 +44,20 @@ model Import {
 model Order {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   stt           Int      @default(0)
-  customerName  String
-  orderContent  String
+  customerName  String   // Bắt buộc
+  
+  // Thêm dấu ? để biến thành optional trong Database
+  orderContent  String?  
   quantity      Int      @default(1)
-  totalPrice    String?  // Lưu string để đồng bộ với phần Import của bạn
-  status        OrderStatus    @default(UNPAID)
-  shipping      ShippingStatus @default(SHIPPING)
+  totalPrice    String?  @default("0")
+  
+  status        OrderStatus     @default(UNPAID)
+  shipping      ShippingStatus  @default(SHIPPING)
+  
   address       String?
   note          String?
   trackingCode  String?
+  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  @@map("orders")
 }

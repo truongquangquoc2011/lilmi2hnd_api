@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// 1. Định nghĩa Enum ở đây để dùng cho toàn bộ hệ thống
 export enum OrderStatus {
   UNPAID = 'UNPAID',
   PAID = 'PAID',
@@ -16,18 +15,20 @@ export enum ShippingStatus {
 }
 
 export const CreateOrderInputSchema = z.object({
+  // Chỉ trường này có .min(1)
   customerName: z.string().min(1, 'Tên khách không được để trống'),
-  orderContent: z.string().min(1, 'Nội dung đơn không được để trống'),
-  quantity: z.number().default(1),
-  totalPrice: z.string().optional(),
+
+  // Các trường còn lại dùng .nullish() để chấp nhận cả null, undefined hoặc chuỗi rỗng
+  orderContent: z.string().nullish().or(z.literal('')), 
+  quantity: z.number().default(1).optional(),
+  totalPrice: z.string().nullish().default('0'),
   
-  // 2. Sử dụng nativeEnum để validate dữ liệu từ FE gửi lên
-  status: z.nativeEnum(OrderStatus).default(OrderStatus.UNPAID),
-  shipping: z.nativeEnum(ShippingStatus).default(ShippingStatus.SHIPPING),
+  status: z.nativeEnum(OrderStatus).default(OrderStatus.UNPAID).optional(),
+  shipping: z.nativeEnum(ShippingStatus).default(ShippingStatus.SHIPPING).optional(),
   
-  address: z.string().optional(),
-  note: z.string().optional(),
-  trackingCode: z.string().optional(),
+  address: z.string().nullish().or(z.literal('')),
+  note: z.string().nullish().or(z.literal('')),
+  trackingCode: z.string().nullish().or(z.literal('')),
 });
 
 export const UpdateOrderInputSchema = CreateOrderInputSchema.partial();
@@ -35,8 +36,8 @@ export const UpdateOrderInputSchema = CreateOrderInputSchema.partial();
 export const OrderResponseSchema = CreateOrderInputSchema.extend({
   id: z.string(),
   stt: z.number(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export type CreateOrderInputType = z.infer<typeof CreateOrderInputSchema>;
