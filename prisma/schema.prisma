@@ -12,7 +12,19 @@ enum ImportStatus {
   PENDING
   RECEIVED
 }
+enum OrderStatus {
+  UNPAID          // Chưa thanh toán
+  PAID            // Đã thanh toán
+  TRANSFER        // Đã thanh toán CK
+  CASH            // Tiền mặt
+}
 
+enum ShippingStatus {
+  PICKUP          // Qua lấy
+  DELIVERED       // Đã giao
+  SHIPPING        // Giao hàng
+  KEEP            // Keep
+}
 model Import {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   provider  String  
@@ -27,4 +39,22 @@ model Import {
   status    String   @default("PENDING")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  stt           Int      @default(0)
+  customerName  String
+  orderContent  String
+  quantity      Int      @default(1)
+  totalPrice    String?  // Lưu string để đồng bộ với phần Import của bạn
+  status        OrderStatus    @default(UNPAID)
+  shipping      ShippingStatus @default(SHIPPING)
+  address       String?
+  note          String?
+  trackingCode  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("orders")
 }
