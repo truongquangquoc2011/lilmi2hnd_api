@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ZodSerializerDto } from 'nestjs-zod';
 import { OrderService } from './order.service';
-import { CreateOrderDTO, UpdateOrderDTO } from './dto/order.dto';
+import { CreateOrderDTO, UpdateOrderDTO, OrderResponseDTO } from './dto/order.dto';
 
 @ApiTags('Order')
 @Controller('orders')
@@ -9,6 +10,7 @@ export class OrderController {
   constructor(private readonly service: OrderService) {}
 
   @Get()
+  @ZodSerializerDto(OrderResponseDTO) // Dùng serializer để bọc array
   @ApiOperation({ summary: 'Lấy toàn bộ danh sách đơn hàng' })
   findAll() {
     return this.service.findAll();
