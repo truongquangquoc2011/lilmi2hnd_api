@@ -44,20 +44,33 @@ model Import {
 model Order {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   stt           Int      @default(0)
-  customerName  String   // Bắt buộc
-  
-  // Thêm dấu ? để biến thành optional trong Database
-  orderContent  String?  
+  customerName  String
+  orderContent  String?
   quantity      Int      @default(1)
   totalPrice    String?  @default("0")
-  
   status        OrderStatus     @default(UNPAID)
   shipping      ShippingStatus  @default(SHIPPING)
-  
   address       String?
   note          String?
   trackingCode  String?
-  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  // Mối quan hệ với Product
+  productIds    String[] @db.ObjectId
+  products      Product[] @relation(fields: [productIds], references: [id])
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  price       Int      @default(0)
+  image       String?  // URL từ Cloudinary
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Mối quan hệ ngược lại với Order
+  orderIds    String[] @db.ObjectId
+  orders      Order[]  @relation(fields: [orderIds], references: [id])
 }

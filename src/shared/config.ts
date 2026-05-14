@@ -4,22 +4,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { z } from 'zod';
 
-// 1. Định nghĩa môi trường chạy
 export enum Environment {
   Development = 'development',
   Production = 'production',
   Test = 'test',
 }
 
-// 2. Load file .env - Sửa lại để không bị crash trên Vercel
 const ENV_PATH = path.resolve('.env');
 
-// Chỉ load dotenv nếu file .env thực sự tồn tại (Local)
-// Nếu không có file (như trên Vercel), nó sẽ tự lấy biến từ process.env
 if (fs.existsSync(ENV_PATH)) {
   loadDotenv({ path: ENV_PATH });
 } else {
-  // Log nhẹ để bạn biết là đang dùng biến môi trường hệ thống, không chặn đứng server
   console.log('💡 No .env file found, using system environment variables.');
 }
 
@@ -34,16 +29,22 @@ const EnvSchema = z.object({
     .transform(Number)
     .refine((val) => !isNaN(val), { message: 'PORT must be a number' }),
   
-  // Lưu ý: Đảm bảo bạn đã điền DATABASE_URL trên Vercel Settings
   DATABASE_URL: z.string().min(1, { message: 'DATABASE_URL is required' }),
+
+  // --- CLOUDINARY CONFIG ---
+  CLOUDINARY_NAME: z.string().min(1, 'CLOUDINARY_NAME is required'),
+  CLOUDINARY_API_KEY: z.string().min(1, 'CLOUDINARY_API_KEY is required'),
+  CLOUDINARY_API_SECRET: z.string().min(1, 'CLOUDINARY_API_SECRET is required'),
+  CLOUDINARY_DEFAULT_FOLDER: z.string().default('avatars'),
+  CLOUDINARY_RETRY_ATTEMPTS: z.string().default('3').transform(Number),
+  CLOUDINARY_MIN_TIMEOUT_MS: z.string().default('1000').transform(Number),
+  CLOUDINARY_MAX_TIMEOUT_MS: z.string().default('5000').transform(Number),
 });
 
 const parsedEnv = EnvSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
-  // Thay vì process.exit(1), log lỗi chi tiết để dễ debug trên Vercel Logs
   console.error('❌ Invalid environment variables:', JSON.stringify(parsedEnv.error.format(), null, 2));
-  // Không nên process.exit(1) trên Vercel vì sẽ làm function invocation failed liên tục
 }
 
 // 4. Export cấu hình
@@ -51,6 +52,17 @@ export const envConfig = {
   nodeEnv: parsedEnv.data?.NODE_ENV || Environment.Production,
   port: parsedEnv.data?.PORT || 8080,
   databaseUrl: parsedEnv.data?.DATABASE_URL || '',
+  
+  // --- Thêm cụm Cloudinary vào đây ---
+  cloudinary: {
+    name: parsedEnv.data?.CLOUDINARY_NAME || '',
+    apiKey: parsedEnv.data?.CLOUDINARY_API_KEY || '',
+    apiSecret: parsedEnv.data?.CLOUDINARY_API_SECRET || '',
+    defaultFolder: parsedEnv.data?.CLOUDINARY_DEFAULT_FOLDER || 'avatars',
+    retryAttempts: parsedEnv.data?.CLOUDINARY_RETRY_ATTEMPTS || 3,
+    minTimeout: parsedEnv.data?.CLOUDINARY_MIN_TIMEOUT_MS || 1000,
+    maxTimeout: parsedEnv.data?.CLOUDINARY_MAX_TIMEOUT_MS || 5000,
+  },
 } as const;
 
 export type EnvConfigType = typeof envConfig;
