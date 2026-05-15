@@ -1,6 +1,6 @@
 export const AVATAR_IMAGE_CONFIG = {
-  SIZE: 500,
-  FIT: 'cover' as any,
+  SIZE: 1000,
+  FIT: 'inside' as any,
   POSITION: 'center',
   JPEG_QUALITY: 80,
   PNG_COMPRESSION_LEVEL: 7,
