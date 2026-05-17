@@ -13,17 +13,18 @@ enum ImportStatus {
   RECEIVED
 }
 enum OrderStatus {
-  UNPAID          // Chưa thanh toán
-  PAID            // Đã thanh toán
-  TRANSFER        // Đã thanh toán CK
-  CASH            // Tiền mặt
+  TRANSFER    // Đã Chuyển Khoản
+  PACKED      // Đã gói đơn
+  SENT        // Đã gửi đơn
+  COMPLETED   // Hoàn thành
+  UNPAID      // Chưa thanh toán
+  CASH        // Tiền mặt
 }
 
 enum ShippingStatus {
-  PICKUP          // Qua lấy
-  DELIVERED       // Đã giao
-  SHIPPING        // Giao hàng
-  KEEP            // Keep
+  SHIPPING    // Ship
+  PICKUP      // Qua Lấy
+  KEEP        // Keep bill
 }
 model Import {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

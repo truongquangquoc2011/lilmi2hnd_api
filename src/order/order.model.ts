@@ -1,16 +1,17 @@
 import { z } from 'zod';
 
 export enum OrderStatus {
-  UNPAID = 'UNPAID',
-  PAID = 'PAID',
   TRANSFER = 'TRANSFER',
+  PACKED = 'PACKED',
+  SENT = 'SENT',
+  COMPLETED = 'COMPLETED',
+  UNPAID = 'UNPAID',
   CASH = 'CASH',
 }
 
 export enum ShippingStatus {
-  PICKUP = 'PICKUP',
-  DELIVERED = 'DELIVERED',
   SHIPPING = 'SHIPPING',
+  PICKUP = 'PICKUP',
   KEEP = 'KEEP',
 }
 
