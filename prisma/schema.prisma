@@ -47,6 +47,7 @@ model Order {
   stt           Int      @default(0)
   customerName  String
   orderContent  String?
+  itemImages    String[] @default([])
   quantity      Int      @default(1)
   totalPrice    String?  @default("0")
   status        OrderStatus     @default(UNPAID)
