@@ -55,6 +55,7 @@ model Order {
   address       String?
   note          String?
   trackingCode  String?
+  shippingFee   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
