@@ -19,12 +19,12 @@ export const CreateOrderInputSchema = z.object({
   customerName: z.string().min(1, 'Tên khách không được để trống'),
   orderContent: z.string().nullish().or(z.literal('')), 
   itemImages: z.array(z.string()).optional().default([]),
-  quantity: z.number().default(1).optional(),
   totalPrice: z.string().nullish().default('0'),
   status: z.nativeEnum(OrderStatus).default(OrderStatus.UNPAID).optional(),
   shipping: z.nativeEnum(ShippingStatus).default(ShippingStatus.SHIPPING).optional(),
   address: z.string().nullish().or(z.literal('')),
   note: z.string().nullish().or(z.literal('')),
+  shippingMessage: z.string().nullish().or(z.literal('')),
   trackingCode: z.string().nullish().or(z.literal('')),
   shippingFee: z.string().nullish().or(z.literal('')),
   
