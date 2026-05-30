@@ -1,16 +1,26 @@
-import { 
-  Body, Controller, Delete, Get, Param, Patch, Post, Query,
-  UseInterceptors, UploadedFile, HttpCode, HttpStatus 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseInterceptors,
+  UploadedFile,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { ProductService } from './product.service';
-import { 
-  CreateProductDTO, 
-  UpdateProductDTO, 
-  ListProductQueryDTO, 
-  ListProductResDTO 
+import {
+  CreateProductDTO,
+  UpdateProductDTO,
+  ListProductQueryDTO,
+  ListProductResDTO,
 } from './dto/product.dto';
 
 @ApiTags('Product')
@@ -51,5 +61,13 @@ export class ProductController {
   @ApiOperation({ summary: 'Xóa sản phẩm' })
   remove(@Param('id') id: string) {
     return this.service.remove(id);
+  }
+  @Patch(':id/stock-status')
+  @ApiOperation({ summary: 'Cập nhật trạng thái còn/hết hàng' })
+  updateStockStatus(
+    @Param('id') id: string,
+    @Body() body: { isOutOfStock: boolean },
+  ) {
+    return this.service.updateStockStatus(id, body.isOutOfStock);
   }
 }

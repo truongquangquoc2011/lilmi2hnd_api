@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ProductRepository } from './product.repo';
 import { CloudinaryService } from '../shared/services/cloudinary.service';
 import { PaginationQueryType } from '../shared/models/pagination.model';
@@ -17,19 +17,39 @@ export class ProductService {
   }
 
   async create(payload: CreateProductInputType, file?: Express.Multer.File) {
-    let imageUrl = payload.image;
+    let imageUrl = payload.image ?? '';
+
     if (file) {
       imageUrl = await this.cloudinary.uploadImage(file);
     }
-    return this.repo.createProduct({ ...payload, image: imageUrl });
+
+    if (!imageUrl) {
+      throw new BadRequestException('Vui lòng thêm ảnh sản phẩm');
+    }
+
+    return this.repo.createProduct({
+      image: imageUrl,
+      isOutOfStock: payload.isOutOfStock ?? false,
+    });
   }
 
   async update(id: string, payload: UpdateProductInputType, file?: Express.Multer.File) {
     let imageUrl = payload.image;
+
     if (file) {
       imageUrl = await this.cloudinary.uploadImage(file);
     }
-    return this.repo.updateProduct(id, { ...payload, image: imageUrl });
+
+    return this.repo.updateProduct(id, {
+      ...(imageUrl ? { image: imageUrl } : {}),
+      ...(payload.isOutOfStock !== undefined
+        ? { isOutOfStock: payload.isOutOfStock }
+        : {}),
+    });
+  }
+
+  async updateStockStatus(id: string, isOutOfStock: boolean) {
+    return this.repo.updateProduct(id, { isOutOfStock });
   }
 
   remove(id: string) {

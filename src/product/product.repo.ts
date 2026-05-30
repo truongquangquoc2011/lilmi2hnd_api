@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationQueryType } from '../shared/models/pagination.model';
-import { 
-  CreateProductInputType, 
-  UpdateProductInputType, 
-  ListProductResType, 
-  ProductResponseType 
+import {
+  CreateProductInputType,
+  UpdateProductInputType,
+  ListProductResType,
+  ProductResponseType,
 } from './product.model';
 
 @Injectable()
@@ -25,25 +25,37 @@ export class ProductRepository {
       this.prisma.product.count(),
     ]);
 
-    return { 
-      items: rows as ProductResponseType[], 
-      total, 
-      skip, 
-      take 
+    return {
+      items: rows as ProductResponseType[],
+      total,
+      skip,
+      take,
     };
   }
 
-  async createProduct(data: CreateProductInputType): Promise<ProductResponseType> {
-    const row = await this.prisma.product.create({ data });
+  async createProduct(
+    data: CreateProductInputType,
+  ): Promise<ProductResponseType> {
+    const row = await this.prisma.product.create({
+      data: {
+        image: data.image!,
+        isOutOfStock: data.isOutOfStock ?? false,
+      },
+    });
+
     return row as ProductResponseType;
   }
 
-  async updateProduct(id: string, data: UpdateProductInputType): Promise<ProductResponseType> {
+  async updateProduct(
+    id: string,
+    data: UpdateProductInputType,
+  ): Promise<ProductResponseType> {
     try {
       const row = await this.prisma.product.update({
         where: { id },
         data,
       });
+
       return row as ProductResponseType;
     } catch {
       throw new NotFoundException('Không tìm thấy sản phẩm để cập nhật');
