@@ -28,8 +28,6 @@ export const CreateOrderInputSchema = z.object({
   trackingCode: z.string().nullish().or(z.literal('')),
   shippingFee: z.string().nullish().or(z.literal('')),
   
-  // THÊM: Mảng chứa các ID sản phẩm để liên kết
-  productIds: z.array(z.string()).optional().default([]),
 });
 
 export const UpdateOrderInputSchema = CreateOrderInputSchema.partial();
